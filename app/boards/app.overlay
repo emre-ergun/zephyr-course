@@ -1,0 +1,14 @@
+/ {
+    
+    aliases {
+        app-led = &led0;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+        
+        led0: led0 {
+            gpios = <&gpiod 12 GPIO_ACTIVE_HIGH>;
+        };
+    };
+};
