@@ -1,0 +1,6 @@
+board:
+  name: my_board
+  full_name: My Board based on STM32 Disco
+  vendor: emre-ergun
+  socs:
+    - name: stm32f407xx
