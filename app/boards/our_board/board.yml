@@ -1,0 +1,6 @@
+board:
+  name: our_board
+  full_name: Our Board based on STM32F4 Discovery
+  vendor: emre-ergun
+  socs:
+    - name: stm32f407xx

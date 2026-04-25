@@ -1,7 +1,7 @@
 config APP_HEARTBEAT_PERIOD_MS
     int "Period of the Application LED"
     range 100 2000
-    default 500
+    default 1000
     help
         Used to set period of application LED
 

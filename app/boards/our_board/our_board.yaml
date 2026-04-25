@@ -1,0 +1,15 @@
+identifier: our_board
+name: Our Board based on ST STM32F4 Discovery
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+ram: 128
+flash: 1024
+supported:
+  - can
+  - pwm
+  - counter
+  - adc
+vendor: st
