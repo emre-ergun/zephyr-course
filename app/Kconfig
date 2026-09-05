@@ -1,3 +1,11 @@
+config APP_HEARTBEAT_PERIOD_MS
+  int "Heart Beat Period(ms)"
+  default 500
+  range 100 2000
+  help
+    Sleep time for heart beat signal
+  
+
 menuconfig LED_SUBSYSTEM
   bool "LED Subsystem"
   default y
