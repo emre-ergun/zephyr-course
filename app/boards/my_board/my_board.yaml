@@ -1,0 +1,10 @@
+identifier: my_board
+name: ST STM32F4 Discovery
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+ram: 128
+flash: 1024
+vendor: st

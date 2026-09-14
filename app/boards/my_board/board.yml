@@ -1,0 +1,6 @@
+board:
+  name: my_board
+  full_name: My Custom Board based on STM32F4 Discovery
+  vendor: st
+  socs:
+    - name: stm32f407xx
