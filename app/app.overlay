@@ -1,5 +1,15 @@
 / {
   aliases {
    app-led = &red_led_5; 
+   pulse-in = &cny70_pulse;
+  };
+
+  pulse_sensor: pulse_sensor {
+    compatible = "gpio-keys";
+
+    cny70_pulse: pulse_0 {
+			gpios = <&gpioa 0 GPIO_ACTIVE_HIGH>;
+      label = "CNY70 pulse";
+    };
   };
 };
