@@ -8,4 +8,10 @@
     led-gpios = <&gpiod 12 GPIO_ACTIVE_HIGH>;
     status = "okay";
   };
+
+  led_sensor1: led-sensor-1 {
+    compatible = "engram,led-sensor";
+    led-gpios = <&gpiod 13 GPIO_ACTIVE_HIGH>;
+    status = "okay";
+  };
 };

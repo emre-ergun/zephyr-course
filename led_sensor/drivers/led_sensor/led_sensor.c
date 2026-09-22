@@ -1,4 +1,5 @@
 #include "zephyr/device.h"
+#include <led_sensor.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/logging/log.h>
@@ -6,6 +7,10 @@
 #define DT_DRV_COMPAT engram_led_sensor
 
 LOG_MODULE_REGISTER(engram_led_sensor, LOG_LEVEL_INF);
+
+static uint8_t instance_counter;
+
+uint8_t get_instance_count(void) { return instance_counter; }
 
 struct led_sensor_config {
   struct gpio_dt_spec led_gpio;
@@ -73,6 +78,7 @@ static int led_sensor_init(const struct device *dev) {
   }
 
   LOG_INF("[LED SENSOR(init)]: driver initialized successfully");
+  instance_counter++;
 
   return 0;
 }

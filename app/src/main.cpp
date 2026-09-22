@@ -1,4 +1,5 @@
 #include "zephyr/drivers/sensor.h"
+#include <led_sensor.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -16,6 +17,9 @@ int main(void) {
     LOG_ERR("[LED SENSOR]: driver not ready");
     return 0;
   }
+
+  LOG_INF("[LED SENSOR]: %d LED driver instance(s) initialized",
+          get_instance_count());
 
   // APP LED with GPIO
   if (!gpio_is_ready_dt(&led)) {
