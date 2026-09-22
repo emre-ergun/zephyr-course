@@ -1,0 +1,7 @@
+menuconfig LED_SENSOR_DRIVER
+	bool "Our custom LED Driver"
+	default y
+	depends on DT_HAS_ENGRAM_LED_SENSOR_ENABLED
+  select GPIO
+	help
+		Enable the custom driver for GPIO
