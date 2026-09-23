@@ -1,0 +1,11 @@
+description: On-board LED Sensor Driver
+
+compatible: "engram,led-sensor"
+
+include: [sensor-device.yaml, base.yaml]
+
+properties:
+  led-gpios:
+    type: phandle-array
+    required: true
+    description: GPIO specifier for the controlled on-board LED.
