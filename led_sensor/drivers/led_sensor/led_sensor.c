@@ -8,14 +8,39 @@
 
 LOG_MODULE_REGISTER(engram_led_sensor, LOG_LEVEL_INF);
 
-static uint8_t instance_counter;
-
-uint8_t get_instance_count(void) { return instance_counter; }
-
 struct led_sensor_config {
   struct gpio_dt_spec led_gpio;
 };
 
+struct led_sensor_data {
+  uint32_t count;
+};
+
+// Extension API
+int led_sensor_set_count(const struct device *dev, uint32_t count) {
+  if (!dev || !device_is_ready(dev)) {
+    return -ENODEV;
+  }
+
+  struct led_sensor_data *data = dev->data;
+  data->count = count;
+
+  return 0;
+}
+
+int led_sensor_get_count(const struct device *dev, uint32_t *count) {
+  if (!dev || !device_is_ready(dev) || !count) {
+    return -EINVAL;
+  }
+
+  struct led_sensor_data *data = dev->data;
+
+  *count = data->count;
+
+  return 0;
+}
+
+// Sensor API
 static int led_sensor_sample_fetch(const struct device *dev,
                                    enum sensor_channel chan) {
   const struct led_sensor_config *cfg = dev->config;
@@ -77,8 +102,8 @@ static int led_sensor_init(const struct device *dev) {
     return ret;
   }
 
-  LOG_INF("[LED SENSOR(init)]: driver initialized successfully");
-  instance_counter++;
+  LOG_INF("[LED SENSOR(init)]: Led driver(pin %d of %s address) initialized",
+          cfg->led_gpio.pin, cfg->led_gpio.port->name);
 
   return 0;
 }
@@ -87,7 +112,8 @@ static int led_sensor_init(const struct device *dev) {
   static const struct led_sensor_config led_sensor_config_##inst = {           \
       .led_gpio = GPIO_DT_SPEC_INST_GET(inst, led_gpios),                      \
   };                                                                           \
-  DEVICE_DT_INST_DEFINE(inst, led_sensor_init, NULL, NULL,                     \
+  static struct led_sensor_data led_sensor_data_##inst;                        \
+  DEVICE_DT_INST_DEFINE(inst, led_sensor_init, NULL, &led_sensor_data_##inst,  \
                         &led_sensor_config_##inst, POST_KERNEL, 80,            \
                         &engram_led_sensor_api);
 

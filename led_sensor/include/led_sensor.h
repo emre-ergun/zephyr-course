@@ -2,12 +2,14 @@
 #define _LED_SENSOR_H_
 
 #include <stdint.h>
+#include <zephyr/device.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-uint8_t get_instance_count(void);
+int led_sensor_set_count(const struct device *dev, uint32_t count);
+int led_sensor_get_count(const struct device *dev, uint32_t *count);
 
 #ifdef __cplusplus
 }
