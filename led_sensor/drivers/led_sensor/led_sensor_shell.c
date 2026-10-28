@@ -3,6 +3,9 @@
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/shell/shell.h>
 
+#define LED_SENSOR_VAL_MIN 0
+#define LED_SENSOR_VAL_MAX 100
+
 static int cmd_fetch_handler(const struct shell *sh, int argc, char **argv) {
   const struct device *dev = shell_device_get_binding(argv[1]);
 
@@ -67,10 +70,16 @@ static int cmd_set_handler(const struct shell *sh, size_t argc, char **argv) {
   }
 
   int err = 0;
-  uint32_t val = shell_strtoul(argv[1], 10, &err);
+  unsigned long val = shell_strtoul(argv[1], 10, &err);
 
   if (err) {
     shell_error(sh, "Invalid integer argument: %s (err %d)", argv[1], err);
+    return -EINVAL;
+  }
+
+  if (val < LED_SENSOR_VAL_MIN || val > LED_SENSOR_VAL_MAX) {
+    shell_error(sh, "Value %lu out of range [%d, %d]", val, LED_SENSOR_VAL_MIN,
+                LED_SENSOR_VAL_MAX);
     return -EINVAL;
   }
 
@@ -81,7 +90,7 @@ static int cmd_set_handler(const struct shell *sh, size_t argc, char **argv) {
     return -EFAULT;
   }
 
-  shell_info(sh, "Sensor data set to: %d", val);
+  shell_info(sh, "Sensor data set to: %lu", val);
 
   return 0;
 }
