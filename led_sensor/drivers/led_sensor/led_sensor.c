@@ -1,20 +1,31 @@
-#include "zephyr/device.h"
 #include <led_sensor.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/sys/atomic.h>
 
 #define DT_DRV_COMPAT engram_led_sensor
 
 LOG_MODULE_REGISTER(engram_led_sensor, LOG_LEVEL_INF);
 
-static uint8_t instance_counter;
+static atomic_t global_instance_counter = ATOMIC_INIT(0);
 
-uint8_t get_instance_count(void) { return instance_counter; }
+struct led_sensor_data {
+  uint8_t instance_count;
+};
 
 struct led_sensor_config {
   struct gpio_dt_spec led_gpio;
 };
+
+uint8_t led_sensor_get_instance_count(const struct device *dev) {
+  if (dev == NULL) {
+    return 0;
+  }
+
+  const struct led_sensor_data *data = dev->data;
+  return data->instance_count;
+}
 
 static int led_sensor_sample_fetch(const struct device *dev,
                                    enum sensor_channel chan) {
@@ -64,6 +75,7 @@ static DEVICE_API(sensor, engram_led_sensor_api) = {
 
 static int led_sensor_init(const struct device *dev) {
   const struct led_sensor_config *cfg = dev->config;
+  struct led_sensor_data *data = dev->data;
   int ret;
 
   if (!gpio_is_ready_dt(&cfg->led_gpio)) {
@@ -78,17 +90,18 @@ static int led_sensor_init(const struct device *dev) {
   }
 
   LOG_INF("[LED SENSOR(init)]: driver initialized successfully");
-  instance_counter++;
+  data->instance_count = (uint8_t)atomic_inc(&global_instance_counter) + 1;
 
   return 0;
 }
 
 #define LED_SENSOR_INIT(inst)                                                  \
+  static struct led_sensor_data led_sensor_data_##inst;                        \
   static const struct led_sensor_config led_sensor_config_##inst = {           \
       .led_gpio = GPIO_DT_SPEC_INST_GET(inst, led_gpios),                      \
   };                                                                           \
-  DEVICE_DT_INST_DEFINE(inst, led_sensor_init, NULL, NULL,                     \
-                        &led_sensor_config_##inst, POST_KERNEL, 80,            \
+  DEVICE_DT_INST_DEFINE(inst, led_sensor_init, NULL, &led_sensor_data_##inst,  \
+                        &led_sensor_config_##inst, POST_KERNEL, 90,            \
                         &engram_led_sensor_api);
 
 DT_INST_FOREACH_STATUS_OKAY(LED_SENSOR_INIT)

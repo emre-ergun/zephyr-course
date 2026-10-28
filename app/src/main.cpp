@@ -19,7 +19,7 @@ int main(void) {
   }
 
   LOG_INF("[LED SENSOR]: %d LED driver instance(s) initialized",
-          get_instance_count());
+          led_sensor_get_instance_count(dev));
 
   // APP LED with GPIO
   if (!gpio_is_ready_dt(&led)) {
